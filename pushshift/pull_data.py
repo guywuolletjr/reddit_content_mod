@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import urllib
 #import lzma
+=======
+import urllib 
+>>>>>>> 494aa6f83fb3ec2195a836c5f7915e3894bb4123
 from tqdm import tqdm #from tqdm import tqdm_notebook as tqdm
 import pandas as pd
 import json
@@ -22,11 +26,10 @@ ZST = '.zst'
 BZ = '.bz2'
 TMP = '/tmp/'
 JSON = '.json'
+AWS = 'aws s3 cp - s3://pushshift-data/'
 
-START_YEAR = 05
+START_YEAR = 5
 END_YEAR = 19
-
-
 
 def get_submissions():
 
@@ -46,8 +49,8 @@ def get_submissions():
             if how == BZ: decomp_command = "bzip2 -d"
             if how == ZST: decomp_command = "zstd --decompress"
 
-            # os.system("curl https://files.pushshift.io/reddit/submissions/RS_v2_2008-01.xz | xz --decompress > /tmp/ohyea.json")
-            os.system("curl {} | {} > {}{}".format(endpoint, decomp_command, TMP, decompressed_file))
+            # os.system("curl https://files.pushshift.io/reddit/submissions/RS_v2_2008-01.xz | xz --decompress | aws s3 cp - s3://mybucket/stream.txt")
+            os.system("curl {} | {} | {}{}".format(endpoint, decomp_command, AWS, decompressed_file))
 
         except Exception as e:
             traceback.print_exc()
