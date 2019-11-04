@@ -1,11 +1,11 @@
-import urllib 
-import lzma
+import urllib
+#import lzma
 from tqdm import tqdm #from tqdm import tqdm_notebook as tqdm
-import pandas as pd 
+import pandas as pd
 import json
 import requests
 import traceback
-import subprocess 
+import subprocess
 import os
 
 
@@ -49,32 +49,32 @@ def get_submissions():
             # os.system("curl https://files.pushshift.io/reddit/submissions/RS_v2_2008-01.xz | xz --decompress > /tmp/ohyea.json")
             os.system("curl {} | {} > {}{}".format(endpoint, decomp_command, TMP, decompressed_file))
 
-        except Exception as e: 
+        except Exception as e:
             traceback.print_exc()
-            print("ERROR: {}".format(e)) 
-    
-    url = '{}{}/{}/'.format(PUSHSHIFT_URL, REDDIT, SUBMISSIONS) 
-  
-    for year in tqdm(range(START_YEAR, END_YEAR+1)): 
-        for month in tqdm(range (1, 13)): 
+            print("ERROR: {}".format(e))
+
+    url = '{}{}/{}/'.format(PUSHSHIFT_URL, REDDIT, SUBMISSIONS)
+
+    for year in tqdm(range(START_YEAR, END_YEAR+1)):
+        for month in tqdm(range (1, 13)):
 
             if (year == 5) and (month <= 5): continue #the first file is 2005-06
-            
+
             if year <= 10: #pre-2011 everything is xz encoded
                 _get_file(year, month, url, XZ, RS_V2)
             elif year <= 14: #2011-2014 inclusive is bs2 encoded
                 _get_file(year, month, url, BZ)
             elif year <= 16: #2015-2016 inclusive is zst encoded
                 _get_file(year, month, url, ZST)
-            elif (year <= 17) and (month <= 11): # 2017-01 through 2017-11 inclusive are bz2 encoded 
+            elif (year <= 17) and (month <= 11): # 2017-01 through 2017-11 inclusive are bz2 encoded
                 _get_file(year, month, url, BZ)
             elif ((year == 2017) and (month == 12)) or ((year <= 18) and (month <= 10)):
                 # 2017-12 through 2018-10 inclusive are xz encoded
                 _get_file(year, month, url, XZ)
-            else: # from 2018-11 to current is zst encoded 
-                _get_file(year, month, url, ZST) 
+            else: # from 2018-11 to current is zst encoded
+                _get_file(year, month, url, ZST)
             print('\n\n\n')
 
 
 if __name__ == "__main__":
-    get_submissions() 
+    get_submissions()
