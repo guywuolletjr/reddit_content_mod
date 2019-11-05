@@ -1,5 +1,6 @@
 import click
 import numpy as np
+import utils
 
 
 @cli.command()
