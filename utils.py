@@ -2,7 +2,7 @@ import sys, os
 import pandas as pd
 
 
-def load_data():
+def load_data(preprocess = False):
 
     data = os.path.join("data", "train.csv")
 
@@ -21,4 +21,4 @@ def load_data():
     X_test = test[['id', 'comment_text']]
     y_test = test[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']]
 
-    return X_train, y_train, X_test, y_test 
+    return X_train, y_train, X_test, y_test

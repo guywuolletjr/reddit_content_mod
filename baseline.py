@@ -2,16 +2,21 @@ import click
 import numpy as np
 import utils
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import precision_recall_fscore_support, classification_report, accuracy_score
+from sklearn.feature_extraction.text import CountVectorizer
 
-@cli.command()
-@click.option('--Cs', default=10,  help="How many Cs values are chosen in a grid for regularization")
+@click.command()
+@click.option('--cs', default=10,  help="How many Cs values are chosen in a grid for regularization")
 @click.option('--cv', default=5,  help="Specifies K for stratified k fold cross validation")
 @click.option('--penalty', default="l2",  help="l2|l1, regularization parameter")
 @click.option('--scoring', default="accuracy",  help="Any function in sk.metrics, some options are accuracy, f1, f1_micro, f1_macro,precision, recall, r2 ")
 @click.option('--max_iter', default=10000,  help="max iterations till convergence")
 @click.option('--ngrams', default=1,  help="Larges ngram value to consider in tf-idf vectorization")
 @click.option('--count', is_flag=True, default=False,  help="uses a plain count vectorizer instead of a tf-idf vectorizer")
-def tfidf(Cs, cv, penalty, scoring, max_iter, ngrams, count):
+def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count):
     """
     This function runs a TF-IDF baseline with linear regression.
 
@@ -43,8 +48,7 @@ def tfidf(Cs, cv, penalty, scoring, max_iter, ngrams, count):
 
         return (precision, recall, fbeta_score, support, accuracy)
 
-
-    X_train, y_train, X_test, y_test = load_data()
+    X_train, y_train, X_test, y_test = utils.load_data()
     np.random.seed(42) #so that our results are the same each time we run
 
     if(ngrams > 3):
@@ -71,7 +75,7 @@ def tfidf(Cs, cv, penalty, scoring, max_iter, ngrams, count):
         y_test_label = y_test[label].values.tolist()
 
         lr = LogisticRegressionCV(   class_weight="balanced",
-                                     Cs = Cs,
+                                     Cs = cs,
                                      cv = cv,
                                      penalty = penalty,
                                      scoring = scoring,
@@ -88,3 +92,6 @@ def tfidf(Cs, cv, penalty, scoring, max_iter, ngrams, count):
 
     macro_accuracy = np.average(np.array(accuracies))
     print("FINAL RESULT\n Macro Accuracy averaged across all labels = {}".format(macro_accuracy))
+
+if __name__ == "__main__":
+    tfidf()
