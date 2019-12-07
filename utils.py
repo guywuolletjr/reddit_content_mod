@@ -22,3 +22,23 @@ def load_data(preprocess = False):
     y_test = test[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']]
 
     return X_train, y_train, X_test, y_test
+    
+def preview_tfs(df, tfs):
+    transformed_examples = []
+    for f in tfs:
+        for i, row in df.sample(frac=1, random_state=2).iterrows():
+            transformed_or_none = f(row)
+            # If TF returned a transformed example, record it in dict and move to next TF.
+            if transformed_or_none is not None:
+                transformed_examples.append(
+                    OrderedDict(
+                        {
+                            "TF Name": f.name,
+                            "Original Text": row.text,
+                            "Transformed Text": transformed_or_none.text,
+                        }
+                    )
+                )
+                break
+    return pd.DataFrame(transformed_examples)
+
