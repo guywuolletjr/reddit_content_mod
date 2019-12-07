@@ -1,6 +1,7 @@
-#Stuff I added
+#stuff I added
 data/
-
+.h5
+.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
