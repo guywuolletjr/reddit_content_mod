@@ -18,13 +18,13 @@ def bi_lstm(train_data, test_data, y_train, y_test, batch_size):
     model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
 
     #save json model
-    eight_way_json = model.to_json()
+    bi_lstm_model = model.to_json()
     with open("models/bi_lstm.json", "w") as json_file:
-        json_file.write(eight_way_json)
+        json_file.write(bi_lstm_model)
 
     # serialize weights to HDF5
     model.save_weights("models/bi_lstm.h5")
-    print("Saved eight_way to disk")
+    print("Saved bidirectional lstm to disk")
 
     return model
 

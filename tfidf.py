@@ -9,6 +9,8 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neural_network import MLPClassifier
 
+from preprocc import preprocess
+
 @click.command()
 @click.option('--cs', default=10,  help="How many Cs values are chosen in a grid for regularization")
 @click.option('--cv', default=5,  help="Specifies K for stratified k fold cross validation")
@@ -54,11 +56,13 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(reddit):
         X_train, y_train, X_test, y_test = utils.load_reddit_data()
         labels = ['moderated']
-        text_col = 'body'
+        text_col = 'text'
     else:
         X_train, y_train, X_test, y_test = utils.load_data()
         labels = ['toxic' , 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
-        text_col = 'comment_text'
+        text_col = 'text'
+
+    X_train, X_test = preprocess(X_train, X_test, False)
 
     np.random.seed(42) #so that our results are the same each time we run
 
@@ -90,7 +94,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=10000))
+        model.add(Dense(128, activation = 'tanh', input_dim=50000))
         model.add(Dense(64, activation = 'tanh'))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
@@ -109,6 +113,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         model.save_weights('models/tfidf_nn_weights.h5')
         with open('models/tfidf_nn_architecture.json', 'w') as f:
             f.write(model.to_json())
+
     else:
         for label in labels:
             print("Train model on the \"{}\" label.\n".format(label))
