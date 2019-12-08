@@ -1,0 +1,26 @@
+Using TensorFlow backend.
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:74: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.
+
+[nltk_data] Downloading package stopwords to /home/ubuntu/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+lowercase
+contractions
+numbers
+newlines
+stopwords
+lemmas
+Neural Network
+Traceback (most recent call last):
+  File "tfidf.py", line 144, in <module>
+    tfidf()
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/click/core.py", line 722, in __call__
+    return self.main(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/click/core.py", line 697, in main
+    rv = self.invoke(ctx)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/click/core.py", line 895, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/click/core.py", line 535, in invoke
+    return callback(*args, **kwargs)
+  File "tfidf.py", line 97, in tfidf
+    model.add(Dense(128, activation = 'tanh', input_dim=1/0000))
+ZeroDivisionError: division by zero
