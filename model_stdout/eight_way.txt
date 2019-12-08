@@ -1,0 +1,73 @@
+Using TensorFlow backend.
+[nltk_data] Downloading package stopwords to /home/ubuntu/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+loading data...
+preprocessing...
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/corpus/util.py", line 80, in __load
+    try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/data.py", line 675, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource [93mwordnet[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('wordnet')
+  [0m
+  Searched in:
+    - '/home/ubuntu/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/share/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/nltk_data'
+**********************************************************************
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "eight_way.py", line 6, in <module>
+    X_train, X_test = preprocess(X_train, X_test)
+  File "/home/ubuntu/reddit_content_mod/preprocc.py", line 239, in preprocess
+    X_train['text'] = X_train.no_stop.apply(lemmatize_text)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/pandas/core/series.py", line 3591, in apply
+    mapped = lib.map_infer(values, f, convert=convert_dtype)
+  File "pandas/_libs/lib.pyx", line 2217, in pandas._libs.lib.map_infer
+  File "/home/ubuntu/reddit_content_mod/preprocc.py", line 207, in lemmatize_text
+    tokens =  [lemmatizer.lemmatize(w) for w in w_tokenizer.tokenize(text)]
+  File "/home/ubuntu/reddit_content_mod/preprocc.py", line 207, in <listcomp>
+    tokens =  [lemmatizer.lemmatize(w) for w in w_tokenizer.tokenize(text)]
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/stem/wordnet.py", line 40, in lemmatize
+    lemmas = wordnet._morphy(word, pos)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/corpus/util.py", line 116, in __getattr__
+    self.__load()
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/corpus/util.py", line 81, in __load
+    except LookupError: raise e
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/corpus/util.py", line 78, in __load
+    root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/nltk/data.py", line 675, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource [93mwordnet[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('wordnet')
+  [0m
+  Searched in:
+    - '/home/ubuntu/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/share/nltk_data'
+    - '/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/nltk_data'
+**********************************************************************
+
