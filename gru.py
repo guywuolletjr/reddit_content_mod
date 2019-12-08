@@ -1,4 +1,21 @@
 from preprocc import *
+import glob
+import matplotlib
+from matplotlib import pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+import imageio as im
+from keras import models
+from keras.models import Sequential
+from keras.layers import Conv2D
+from keras.layers import MaxPooling2D
+from keras.layers import Flatten
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.preprocessing import image
+from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import ModelCheckpoint
+
 
 def gru(train_data, test_data, y_train, y_test, batch_size):
     NUM_WORDS = get_num_words()
@@ -18,8 +35,8 @@ def gru(train_data, test_data, y_train, y_test, batch_size):
 
     #first run through didn't specify a batch size, probably do that
     #on the next try.
-    model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
-
+    history = model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
+    
     #save json model
     gru_model = model.to_json()
     with open("models/gru.json", "w") as json_file:
@@ -33,7 +50,7 @@ def gru(train_data, test_data, y_train, y_test, batch_size):
     for i in range(len(model.metrics_names)):
         print("%s: %.2f%%" % (model.metrics_names[i], score[i]*100))
 
-    return model
+    return model, history 
 
 
 print("loading data...")
@@ -47,6 +64,23 @@ print(type(train_data))
 print("model!!!")
 model = gru(train_data, test_data, y_train, y_test, batch_size=20)
 print("evaluate!!")
-score = eight_way_eval(model, test_data, y_test)
+score, history = eight_way_eval(model, test_data, y_test)
 print(score)
+
+acc = history.history['acc']
+val_acc = history.history['val_acc']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+epochs = range(1, len(acc) + 1)
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+plt.figure()
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+plt.show()
+
 print("DONE!")
