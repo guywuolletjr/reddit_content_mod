@@ -22,11 +22,11 @@ def gru(train_data, test_data, y_train, y_test, batch_size):
 
     #save json model
     eight_way_json = model.to_json()
-    with open("eight_way.json", "w") as json_file:
+    with open("models/gru.json", "w") as json_file:
         json_file.write(eight_way_json)
 
     # serialize weights to HDF5
-    model.save_weights("eight_way.h5")
+    model.save_weights("models/gru.h5")
     print("Saved eight_way to disk")
 
     return model
