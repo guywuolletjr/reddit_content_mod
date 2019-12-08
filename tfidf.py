@@ -84,11 +84,13 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
         y_test_label = y_test[label].values.tolist()
 
         if(reddit):
+            print("Neural Network")
             model = MLPClassifier(  hidden_layer_sizes=(128,128,128),
                                     activation='tanh',
                                     verbose=1
                                     )
         else:
+            print("Logistic Regression")
             model = LogisticRegressionCV(   class_weight="balanced",
                                             Cs = cs,
                                             cv = cv,
