@@ -85,7 +85,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
 
         if(nn):
             print("Neural Network")
-            model = MLPClassifier(  hidden_layer_sizes=(128,128,128),
+            model = MLPClassifier(  hidden_layer_sizes=(16,16,16),
                                     activation='tanh',
                                     verbose=1
                                     )
@@ -96,8 +96,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
                                             cv = cv,
                                             penalty = penalty,
                                             scoring = scoring,
-                                            max_iter = max_iter,
-                                            verbose=1)
+                                            max_iter = max_iter)
 
         model.fit(X_train_tfidf, y_train_label)
 
