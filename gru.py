@@ -29,6 +29,10 @@ def gru(train_data, test_data, y_train, y_test, batch_size):
     model.save_weights("models/gru.h5")
     print("Saved gru to disk")
 
+    score = model.evaluate(test_data, y_test, verbose=1)
+    for i in range(len(model.metrics_names)):
+        print("%s: %.2f%%" % (model.metrics_names[i], score[i]*100))
+
     return model
 
 
