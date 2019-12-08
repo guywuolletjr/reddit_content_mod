@@ -216,7 +216,6 @@ def lemmatize_text(text):
     proc = ' '.join(tokens)
     return proc
 
-
 #input is X_train and X_test comment dataframe
 #COLUMN WITH DATA NEEDS TO BE NAMED COMMENT_TEXT
 def preprocess(X_train, X_test, augment=False):
