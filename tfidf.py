@@ -69,7 +69,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(ngrams > 3):
         ngrams = 3 # this makes training not take forever
 
-    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=10000)
+    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=5000)
     if(count):
         vectorizer = CountVectorizer()
 
@@ -94,8 +94,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=10000))
-        model.add(Dense(64, activation = 'tanh'))
+        model.add(Dense(64, activation = 'tanh', input_dim=5000))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
         model.summary()
@@ -108,7 +107,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         y_train = y_train.values
         y_test = y_test.values
 
-        model_output = model.fit(X_train_tfidf, y_train, epochs=100, batch_size = 10, validation_split=.3, verbose=1)
+        model_output = model.fit(X_train_tfidf, y_train, epochs=100, validation_split=.2, verbose=1)
 
         if(reddit):
             weights_name = 'models/tfidf_nn_reddit_weights.h5'
@@ -120,6 +119,10 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         model.save_weights(weights_name)
         with open(architecture_name, 'w') as f:
             f.write(model.to_json())
+
+        score = model.evaluate(X_test_tfidf, y_test, verbose=1)
+        for i in range(len(model.metrics_names)):
+            print("%s: %.2f%%" % (model.metrics_names[i], score[i]*100))
 
     else:
         for label in labels:
@@ -141,7 +144,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             print_results(model, X_train_tfidf, y_train_label)
 
             print("Test Results\n")
-            precision, recall, fbeta_score, support, accuracy = print_results(lr, X_test_tfidf, y_test_label)
+            precision, recall, fbeta_score, support, accuracy = print_results(model, X_test_tfidf, y_test_label)
             accuracies.append(accuracy)
 
         macro_accuracy = np.average(np.array(accuracies))
