@@ -337,6 +337,10 @@ def tokenize(X_train, X_test):
 
     return train_data, test_data
 
+def get_num_words():
+    global NUM_WORDS
+    print("RETURNING THIS:", NUM_WORDS)
+    return NUM_WORDS
 
 def eight_way(train_data, test_data, y_train, y_test, batch_size):
     global NUM_WORDS
