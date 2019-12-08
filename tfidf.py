@@ -82,7 +82,8 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         print("Neural Network")
         from keras.models import Sequential
         from keras.layers import Dense, Activation
-
+        from keras.utils.vis_utils import plot_model
+        
         if(reddit):
             output_size = 1
         else:
@@ -96,7 +97,8 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         model.summary()
 
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy'])
-
+        plot_model(model, to_file='tfidf_model_plot.png', show_shapes=True, show_layer_names=True)
+        
         X_train_tfidf = X_train_tfidf.toarray()
         X_test_tfidf = X_test_tfidf.toarray()
         y_train = y_train.values

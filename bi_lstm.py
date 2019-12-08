@@ -11,7 +11,8 @@ def bi_lstm(train_data, test_data, y_train, y_test, batch_size):
     model.add(Dense(6, activation='sigmoid'))#change to 6
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+    
+    plot_model(model, to_file='bi_lstm_model_plot.png', show_shapes=True, show_layer_names=True)
     #first run through didn't specify a batch size, probably do that
     #on the next try.
     model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)

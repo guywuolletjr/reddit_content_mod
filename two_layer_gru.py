@@ -15,7 +15,7 @@ def two_layer_gru(train_data, test_data, y_train, y_test, batch_size):
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-
+    plot_model(model, to_file='two_layer_gru_model_plot.png', show_shapes=True, show_layer_names=True)
 
     #first run through didn't specify a batch size, probably do that
     #on the next try.
