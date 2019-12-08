@@ -121,11 +121,9 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         with open(architecture_name, 'w') as f:
             f.write(model.to_json())
 
-        print("Train Results\n")
-        print_results(model, X_train_tfidf, y_train)
-
-        print("Test Results\n")
-        precision, recall, fbeta_score, support, accuracy = print_results(model, X_test_tfidf, y_test)
+        score = model.evaluate(X_test_tfidf, y_test, verbose=1)
+        for i in range(len(model.metrics_names)):
+            print("%s: %.2f%%" % (model.metrics_names[i], score[i]*100))
 
     else:
         for label in labels:
