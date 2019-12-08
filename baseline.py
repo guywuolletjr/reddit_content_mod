@@ -16,7 +16,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 @click.option('--max_iter', default=10000,  help="max iterations till convergence")
 @click.option('--ngrams', default=1,  help="Larges ngram value to consider in tf-idf vectorization")
 @click.option('--count', is_flag=True, default=False,  help="uses a plain count vectorizer instead of a tf-idf vectorizer")
-def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count):
+@click.option('--reddit', is_flag=True, default=False,  help="train and test on the reddit data")
+def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
     """
     This function runs a TF-IDF baseline with linear regression.
 
@@ -48,7 +49,16 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count):
 
         return (precision, recall, fbeta_score, support, accuracy)
 
-    X_train, y_train, X_test, y_test = utils.load_data()
+    if(reddit):
+        X_train, y_train, X_test, y_test = utils.load_reddit_data()
+        labels = ['moderation']
+        text_col = 'body'
+    else:
+        X_train, y_train, X_test, y_test = utils.load_data()
+        labels = ['toxic' , 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+        text_col = 'comment_text'
+
+
     np.random.seed(42) #so that our results are the same each time we run
 
     if(ngrams > 3):
@@ -59,14 +69,12 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count):
         vectorizer = CountVectorizer()
 
     # turn the corpus into a list to pass into the vectorizer
-    train_corpus = X_train['comment_text'].values.tolist()
-    test_corpus = X_test['comment_text'].values.tolist()
+    train_corpus = X_train[text_col].values.tolist()
+    test_corpus = X_test[text_col].values.tolist()
 
     X_train_tfidf = tfidf_transform(train_corpus, is_train=True)
     X_test_tfidf = tfidf_transform(test_corpus, is_train=False)
 
-
-    labels = ['toxic' , 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
     accuracies = []
 
     for label in labels:
