@@ -87,22 +87,22 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         from keras.models import Sequential
         from keras.layers import Dense, Activation
         from keras.utils.vis_utils import plot_model
-        
+
         if(reddit):
             output_size = 1
         else:
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=10000))
+        model.add(Dense(128, activation = 'tanh', input_dim=1/0000))
         model.add(Dense(64, activation = 'tanh'))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
         model.summary()
 
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy'])
-        plot_model(model, to_file='tfidf_model_plot.png', show_shapes=True, show_layer_names=True)
-        
+        #plot_model(model, to_file='tfidf_model_plot.png', show_shapes=True, show_layer_names=True)
+
         X_train_tfidf = X_train_tfidf.toarray()
         X_test_tfidf = X_test_tfidf.toarray()
         y_train = y_train.values
