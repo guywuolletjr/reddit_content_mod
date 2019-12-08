@@ -1,7 +1,7 @@
 from preprocc import *
 
 def gru(train_data, test_data, y_train, y_test, batch_size):
-    global NUM_WORDS
+    NUM_WORDS = get_num_words()
     print(NUM_WORDS)
     ## Network architecture
     # inspired at https://towardsdatascience.com/a-beginners-guide-on-sentiment-analysis-with-rnn-9e100627c02e and https://medium.com/@sabber/classifying-yelp-review-comments-using-lstm-and-word-embeddings-part-1-eb2275e4066b
