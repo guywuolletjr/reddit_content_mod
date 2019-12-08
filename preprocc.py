@@ -40,11 +40,11 @@ from nltk.probability import FreqDist
 from nltk.stem import WordNetLemmatizer
 
 
-##AUGMENTING STUFF
-from aug_functions import *
-from snorkel.augmentation import RandomPolicy
-from snorkel.augmentation import MeanFieldPolicy
-from snorkel.augmentation import PandasTFApplier
+# ##AUGMENTING STUFF
+# from aug_functions import *
+# from snorkel.augmentation import RandomPolicy
+# from snorkel.augmentation import MeanFieldPolicy
+# from snorkel.augmentation import PandasTFApplier
 
 BLACKLIST_STOPWORDS = ['over','only','very','not','no']
 ENGLISH_STOPWORDS = set(stopwords.words('english')) - set(BLACKLIST_STOPWORDS)
@@ -261,65 +261,65 @@ def preprocess(X_train, X_test, augment=False):
     return X_train, X_test
 
 
-def augment(X_train, y_train):
-    labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
-    X_train['none'] = 1-y_train[labels].max(axis=1) #make an indicator for when there is no
-    X_train['label'] = y_train.values.tolist()
+# def augment(X_train, y_train):
+#     labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+#     X_train['none'] = 1-y_train[labels].max(axis=1) #make an indicator for when there is no
+#     X_train['label'] = y_train.values.tolist()
 
-    #augment the y
-    y_train['none'] = 1-y_train[labels].max(axis=1)
+#     #augment the y
+#     y_train['none'] = 1-y_train[labels].max(axis=1)
 
-    #negatives y_trains
-    y_neg = y_train[y_train['none'] == 0]
+#     #negatives y_trains
+#     y_neg = y_train[y_train['none'] == 0]
 
-    # #negatives
-    X_neg = X_train[X_train['none'] == 0]
+#     # #negatives
+#     X_neg = X_train[X_train['none'] == 0]
 
-    #positive y_trains
-    y_pos = y_train[y_train['none'] == 1]
+#     #positive y_trains
+#     y_pos = y_train[y_train['none'] == 1]
 
-    #positive x_trains
-    X_pos = X_train[X_train['none'] == 1]
-
-
-    print("entered augmentation")
-    #no_stop
-    tfs = [
-        change_person,
-        swap_adjectives,
-        replace_verb_with_synonym,
-        replace_noun_with_synonym,
-        #replace_adjective_with_synonym,
-    ]
-
-    mean_field_policy = MeanFieldPolicy(
-        len(tfs),
-        sequence_length=2,
-        n_per_original=4,
-        keep_original=True,
-        p=[0.1, 0.1, 0.4, 0.4],
-    )
-
-    tf_applier = PandasTFApplier(tfs, mean_field_policy)
-
-    #negative augmentations
-    df_train_augmented = tf_applier.apply(X_neg)
-    Y_train_augmented = df_train_augmented["label"].values
-
-    #this is how you split out
-    label = pd.DataFrame(columns=labels)
-    label['toxic'] = X_train['label'].apply(lambda x: x[0])
-    label['severe_toxic'] = X_train['label'].apply(lambda x: x[1])
-    label['obscene'] = X_train['label'].apply(lambda x: x[2])
-    label['threat'] = X_train['label'].apply(lambda x: x[3])
-    label['insult'] = X_train['label'].apply(lambda x: x[4])
-    label['identity_hate'] = X_train['label'].apply(lambda x: x[5])
-
-    X_train = pd.concat([X_pos, df_train_augmented])
-    y_train = pd.concat([y_pos, label])
+#     #positive x_trains
+#     X_pos = X_train[X_train['none'] == 1]
 
 
-    return X_train, y_train
+#     print("entered augmentation")
+#     #no_stop
+#     tfs = [
+#         change_person,
+#         swap_adjectives,
+#         replace_verb_with_synonym,
+#         replace_noun_with_synonym,
+#         #replace_adjective_with_synonym,
+#     ]
+
+#     mean_field_policy = MeanFieldPolicy(
+#         len(tfs),
+#         sequence_length=2,
+#         n_per_original=4,
+#         keep_original=True,
+#         p=[0.1, 0.1, 0.4, 0.4],
+#     )
+
+#     tf_applier = PandasTFApplier(tfs, mean_field_policy)
+
+#     #negative augmentations
+#     df_train_augmented = tf_applier.apply(X_neg)
+#     Y_train_augmented = df_train_augmented["label"].values
+
+#     #this is how you split out
+#     label = pd.DataFrame(columns=labels)
+#     label['toxic'] = X_train['label'].apply(lambda x: x[0])
+#     label['severe_toxic'] = X_train['label'].apply(lambda x: x[1])
+#     label['obscene'] = X_train['label'].apply(lambda x: x[2])
+#     label['threat'] = X_train['label'].apply(lambda x: x[3])
+#     label['insult'] = X_train['label'].apply(lambda x: x[4])
+#     label['identity_hate'] = X_train['label'].apply(lambda x: x[5])
+
+#     X_train = pd.concat([X_pos, df_train_augmented])
+#     y_train = pd.concat([y_pos, label])
+
+
+#     return X_train, y_train
 
 
 def tokenize(X_train, X_test):
