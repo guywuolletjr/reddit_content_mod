@@ -65,7 +65,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(ngrams > 3):
         ngrams = 3 # this makes training not take forever
 
-    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=10000)
+    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=50000)
     if(count):
         vectorizer = CountVectorizer()
 
@@ -89,7 +89,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=10000))
+        model.add(Dense(128, activation = 'tanh', input_dim=50000))
         model.add(Dense(64, activation = 'tanh'))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
