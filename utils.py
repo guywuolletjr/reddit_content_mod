@@ -2,6 +2,7 @@ import sys, os
 import pandas as pd
 import numpy as np 
 from sklearn.model_selection import train_test_split
+from collections import OrderedDict
 
 
 def load_data():
@@ -55,8 +56,8 @@ def preview_tfs(df, tfs):
                     OrderedDict(
                         {
                             "TF Name": f.name,
-                            "Original Text": row.text,
-                            "Transformed Text": transformed_or_none.text,
+                            "Original Text": row.expanded,
+                            "Transformed Text": transformed_or_none.expanded,
                         }
                     )
                 )
