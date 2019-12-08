@@ -102,7 +102,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         y_train = y_train.values
         y_test = y_test.values
 
-        model_output = model.fit(X_train_tfidf, y_train, epochs=100, batch_size = 10, verbose=1)
+        model_output = model.fit(X_train_tfidf, y_train, epochs=100, batch_size = 10, validation_split=.3 verbose=1)
 
         model.save_weights('models/tfidf_nn_weights.h5')
         with open('models/tfidf_nn_architecture.json', 'w') as f:

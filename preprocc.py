@@ -9,8 +9,8 @@ from nltk.util import ngrams
 from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
 from nltk.probability import FreqDist
-from nltk.stem import WordNetLemmatizer 
-import nltk 
+from nltk.stem import WordNetLemmatizer
+import nltk
 nltk.download('stopwords')
 
 #tf imports
@@ -37,7 +37,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
 from nltk.probability import FreqDist
 #lemmatizing
-from nltk.stem import WordNetLemmatizer 
+from nltk.stem import WordNetLemmatizer
 
 BLACKLIST_STOPWORDS = ['over','only','very','not','no']
 ENGLISH_STOPWORDS = set(stopwords.words('english')) - set(BLACKLIST_STOPWORDS)
@@ -175,7 +175,7 @@ def expandContractions(text):
     return c_re.sub(replace, text)
 
 
-#loads the data from the train.csv into X_train etc. 
+#loads the data from the train.csv into X_train etc.
 def load_data():
     data = os.path.join("data", "train.csv")
 
@@ -186,15 +186,15 @@ def load_data():
     X_test = pd.read_csv(os.path.join("data", "test.csv"))
     y_test = pd.read_csv(os.path.join("data", "test_labels.csv"))
     test = X_test.merge(y_test, on='id')
-    test = test[ (test['toxic']!=-1) | (test['severe_toxic']!=-1) | 
-                (test['obscene']!=-1) | (test['threat']!=-1) | (test['insult']!=-1) 
+    test = test[ (test['toxic']!=-1) | (test['severe_toxic']!=-1) |
+                (test['obscene']!=-1) | (test['threat']!=-1) | (test['insult']!=-1)
                 | (test['identity_hate']!=-1) ]
-    test = test.reset_index(drop=True) 
-    
+    test = test.reset_index(drop=True)
+
     X_test = test[['comment_text']]
     y_test = test[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']]
 
-    return X_train, y_train, X_test, y_test 
+    return X_train, y_train, X_test, y_test
 
 
 
@@ -203,7 +203,7 @@ def lemmatize_text(text):
 #     nltk.download('wordnet')
     w_tokenizer = nltk.tokenize.WhitespaceTokenizer()
     lemmatizer = nltk.stem.WordNetLemmatizer()
-    
+
     tokens =  [lemmatizer.lemmatize(w) for w in w_tokenizer.tokenize(text)]
     proc = ' '.join(tokens)
     return proc
@@ -239,7 +239,7 @@ def preprocess(X_train, X_test):
     X_train['text'] = X_train.no_stop.apply(lemmatize_text)
     X_test['text'] = X_test.no_stop.apply(lemmatize_text)
 
-    
+
     return X_train, X_test
 
 
@@ -255,7 +255,7 @@ def tokenize(X_train, X_test):
     train_data = pad_sequences(train_sequences, maxlen=150)
     test_sequences = tokenizer.texts_to_sequences(X_test['text'])
     test_data = pad_sequences(test_sequences, maxlen=150)
-    
+
     return train_data, test_data
 
 
@@ -265,30 +265,30 @@ def eight_way(train_data, test_data, y_train, y_test, batch_size):
     ## Network architecture
     # inspired at https://towardsdatascience.com/a-beginners-guide-on-sentiment-analysis-with-rnn-9e100627c02e and https://medium.com/@sabber/classifying-yelp-review-comments-using-lstm-and-word-embeddings-part-1-eb2275e4066b
     model = Sequential()
-    
-    #first layer is embedding, takes in size of vocab, 100 dim embedding, and 150 which is length of the comment 
-    model.add(Embedding(NUM_WORDS, 100, input_length=150)) 
+
+    #first layer is embedding, takes in size of vocab, 100 dim embedding, and 150 which is length of the comment
+    model.add(Embedding(NUM_WORDS, 100, input_length=150))
     model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
-    model.add(Dense(6, activation='sigmoid'))#change to 8 
+    model.add(Dense(6, activation='sigmoid'))#change to 8
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    
-    
-    
+
+
+
     #first run through didn't specify a batch size, probably do that
-    #on the next try. 
+    #on the next try.
     model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
-    
+
     #save json model
     eight_way_json = model.to_json()
     with open("eight_way.json", "w") as json_file:
         json_file.write(eight_way_json)
-    
+
     # serialize weights to HDF5
     model.save_weights("eight_way.h5")
     print("Saved eight_way to disk")
-    
-    return model 
+
+    return model
 
 def print_results(model, X, y):
     """Print out evaluate a model, returns the metrics as tuple
@@ -308,10 +308,12 @@ def print_results(model, X, y):
 
     return (precision, recall, fbeta_score, support, accuracy)
 
-
 def eight_way_eval(model, test_data, y_test):
     score = model.evaluate(test_data, y_test)
     print_results(model, test_data, y_test)
     return score
 
-
+def model_eval(model, test_data, y_test):
+    score = model.evaluate(test_data, y_test)
+    print_results(model, test_data, y_test)
+    return score
