@@ -107,7 +107,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         y_train = y_train.values
         y_test = y_test.values
 
-        model_output = model.fit(X_train_tfidf, y_train, epochs=1, validation_split=.2, verbose=1)
+        model_output = model.fit(X_train_tfidf, y_train, epochs=100, validation_split=.2, verbose=1)
 
         if(reddit):
             weights_name = 'models/tfidf_nn_reddit_weights.h5'
