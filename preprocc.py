@@ -266,8 +266,8 @@ def preprocess(X_train, X_test, augment=False):
     X_train['text'] = X_train.no_stop.apply(lemmatize_text)
     X_test['text'] = X_test.no_stop.apply(lemmatize_text)
 
-    export_train = X_train.to_csv(r'X_train.csv', index = None, header=True)
-    export_test = X_test.to_csv(r'X_test.csv', index = None, header=True)
+    export_train = X_train.to_csv('data/X_train.csv', index = None, header=True)
+    export_test = X_test.to_csv('data/X_test.csv', index = None, header=True)
 
     return X_train, X_test
 
