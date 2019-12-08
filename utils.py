@@ -1,8 +1,10 @@
 import sys, os
 import pandas as pd
+import numpy as np 
+from sklearn.model_selection import train_test_split
 
 
-def load_data(preprocess = False):
+def load_data():
 
     data = os.path.join("data", "train.csv")
 
@@ -23,6 +25,24 @@ def load_data(preprocess = False):
 
     return X_train, y_train, X_test, y_test
     
+def load_reddit_data(split=.9):
+    
+    mod_df = pd.read_csv('data/reddit/reddit-removal-log.csv')
+    unmod_df = pd.read_csv('data/reddit/data2M.csv')
+    
+    mod_df['moderated'] = 1
+    unmod_df['moderated'] = 0
+    
+    df = pd.concat([mod_df, unmod_df])
+    df = df.reset_index(drop=True)
+    
+    X = df[['body', 'subreddit']]
+    y = df[['moderated']]
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+        
+    return X_train, X_test, y_train, y_test
+
 def preview_tfs(df, tfs):
     transformed_examples = []
     for f in tfs:
