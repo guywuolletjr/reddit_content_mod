@@ -342,7 +342,7 @@ random_policy = RandomPolicy(
 mean_field_policy = MeanFieldPolicy(
     len(tfs),
     sequence_length=2,
-    n_per_original=2,
+    n_per_original=4,
     keep_original=True,
     p=[0.1, 0.1, 0.4, 0.4],
 )
