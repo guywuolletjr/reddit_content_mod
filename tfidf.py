@@ -65,7 +65,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(ngrams > 3):
         ngrams = 3 # this makes training not take forever
 
-    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams))
+    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=10000)
     if(count):
         vectorizer = CountVectorizer()
 
@@ -78,18 +78,41 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
 
     accuracies = []
 
-    for label in labels:
-        print("Train model on the \"{}\" label.\n".format(label))
-        y_train_label = y_train[label].values.tolist()
-        y_test_label = y_test[label].values.tolist()
+    if(nn):
+        print("Neural Network")
+        from keras.models import Sequential
+        from keras.layers import Dense, Activation
 
-        if(nn):
-            print("Neural Network")
-            model = MLPClassifier(  hidden_layer_sizes=(16,16,16),
-                                    activation='tanh',
-                                    verbose=1
-                                    )
+        if(reddit):
+            output_size = 1
         else:
+            output_size = 6
+
+        model = Sequential()
+        model.add(Dense(128, activation = 'tanh', input_dim=10000))
+        model.add(Dense(64, activation = 'tanh'))
+        model.add(Dense(32, activation = 'tanh'))
+        model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
+        model.summary()
+
+        model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy'])
+
+        X_train_tfidf = X_train_tfidf.toarray()
+        X_test_tfidf = X_test_tfidf.toarray()
+        y_train = y_train.values
+        y_test = y_test.values
+
+        model_output = model.fit(X_train_tfidf, y_train, epochs=100, batch_size = 10, verbose=1)
+
+        model.save_weights('models/tfidf_nn_weights.h5')
+        with open('models/tfidf_nn_architecture.json', 'w') as f:
+            f.write(model.to_json())
+    else:
+        for label in labels:
+            print("Train model on the \"{}\" label.\n".format(label))
+            y_train_label = y_train[label].values.tolist()
+            y_test_label = y_test[label].values.tolist()
+
             print("Logistic Regression")
             model = LogisticRegressionCV(   class_weight="balanced",
                                             Cs = cs,
@@ -98,17 +121,17 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
                                             scoring = scoring,
                                             max_iter = max_iter)
 
-        model.fit(X_train_tfidf, y_train_label)
+            model.fit(X_train_tfidf, y_train_label)
 
-        print("Train Results\n")
-        print_results(model, X_train_tfidf, y_train_label)
+            print("Train Results\n")
+            print_results(model, X_train_tfidf, y_train_label)
 
-        print("Test Results\n")
-        precision, recall, fbeta_score, support, accuracy = print_results(lr, X_test_tfidf, y_test_label)
-        accuracies.append(accuracy)
+            print("Test Results\n")
+            precision, recall, fbeta_score, support, accuracy = print_results(lr, X_test_tfidf, y_test_label)
+            accuracies.append(accuracy)
 
-    macro_accuracy = np.average(np.array(accuracies))
-    print("FINAL RESULT\n Macro Accuracy averaged across all labels = {}".format(macro_accuracy))
+        macro_accuracy = np.average(np.array(accuracies))
+        print("FINAL RESULT\n Macro Accuracy averaged across all labels = {}".format(macro_accuracy))
 
 if __name__ == "__main__":
     tfidf()
