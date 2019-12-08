@@ -107,6 +107,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
         model.save_weights('models/tfidf_nn_weights.h5')
         with open('models/tfidf_nn_architecture.json', 'w') as f:
             f.write(model.to_json())
+
     else:
         for label in labels:
             print("Train model on the \"{}\" label.\n".format(label))
