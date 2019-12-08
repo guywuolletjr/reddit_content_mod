@@ -202,8 +202,8 @@ def load_data():
     X_test = test[['comment_text']]
     y_test = test[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']]
 
-    return X_train, y_train, X_test, y_test
 
+    return X_train, y_train, X_test, y_test
 
 
 #lemmatizer helper
@@ -216,19 +216,27 @@ def lemmatize_text(text):
     proc = ' '.join(tokens)
     return proc
 
+def preprocess_cached():
+    X_train = pd.read_csv("X_train.csv")
+    X_test = pd.read_csv("X_test.csv")
+
+    return X_train, X_test
+
+
 
 #input is X_train and X_test comment dataframe
-#COLUMN WITH DATA NEEDS TO BE NAMED COMMENT_TEXT
+#COLUMN WITH DATA NEEDS TO BE NAMED comment_text
+#CHANGE FILENAME if working with more than one dataset
 def preprocess(X_train, X_test, augment=False):
     #convert text to lowercase
     print("lowercase")
-    X_train = X_train.apply(lambda x: x.astype(str).str.lower())
-    X_test = X_test.apply(lambda x: x.astype(str).str.lower())
+    X_train['lower'] = X_train.comment_text.apply(lambda x: x.lower())
+    X_test['lower'] = X_test.comment_text.apply(lambda x: x.lower())
 
     #column now has the expanded contractions
     print("contractions")
-    X_train['expanded'] = X_train.comment_text.apply(expandContractions)
-    X_test['expanded'] = X_test.comment_text.apply(expandContractions)
+    X_train['expanded'] = X_train.lower.apply(expandContractions)
+    X_test['expanded'] = X_test.lower.apply(expandContractions)
 
     #remove numbers, punctuation
     #https://medium.com/@chaimgluck1/have-messy-text-data-clean-it-with-simple-lambda-functions-645918fcc2fc
@@ -258,69 +266,19 @@ def preprocess(X_train, X_test, augment=False):
     X_train['text'] = X_train.no_stop.apply(lemmatize_text)
     X_test['text'] = X_test.no_stop.apply(lemmatize_text)
 
+    export_train = X_train.to_csv('data/X_train.csv', index = None, header=True)
+    export_test = X_test.to_csv('data/X_test.csv', index = None, header=True)
 
     return X_train, X_test
 
+# #need to
+# def load_data_from_csv():
+#     X_train = pd.read_csv("X_train.csv")
+#     X_test = pd.read_csv("X_test.csv")
+#     y_train = pd.read_csv("y_train.csv")
+#     y_test  = pd.read_csv("y_test.csv")
 
-# def augment(X_train, y_train):
-#     labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
-#     X_train['none'] = 1-y_train[labels].max(axis=1) #make an indicator for when there is no
-#     X_train['label'] = y_train.values.tolist()
-
-#     #augment the y
-#     y_train['none'] = 1-y_train[labels].max(axis=1)
-
-#     #negatives y_trains
-#     y_neg = y_train[y_train['none'] == 0]
-
-#     # #negatives
-#     X_neg = X_train[X_train['none'] == 0]
-
-#     #positive y_trains
-#     y_pos = y_train[y_train['none'] == 1]
-
-#     #positive x_trains
-#     X_pos = X_train[X_train['none'] == 1]
-
-
-#     print("entered augmentation")
-#     #no_stop
-#     tfs = [
-#         change_person,
-#         swap_adjectives,
-#         replace_verb_with_synonym,
-#         replace_noun_with_synonym,
-#         #replace_adjective_with_synonym,
-#     ]
-
-#     mean_field_policy = MeanFieldPolicy(
-#         len(tfs),
-#         sequence_length=2,
-#         n_per_original=4,
-#         keep_original=True,
-#         p=[0.1, 0.1, 0.4, 0.4],
-#     )
-
-#     tf_applier = PandasTFApplier(tfs, mean_field_policy)
-
-#     #negative augmentations
-#     df_train_augmented = tf_applier.apply(X_neg)
-#     Y_train_augmented = df_train_augmented["label"].values
-
-#     #this is how you split out
-#     label = pd.DataFrame(columns=labels)
-#     label['toxic'] = X_train['label'].apply(lambda x: x[0])
-#     label['severe_toxic'] = X_train['label'].apply(lambda x: x[1])
-#     label['obscene'] = X_train['label'].apply(lambda x: x[2])
-#     label['threat'] = X_train['label'].apply(lambda x: x[3])
-#     label['insult'] = X_train['label'].apply(lambda x: x[4])
-#     label['identity_hate'] = X_train['label'].apply(lambda x: x[5])
-
-#     X_train = pd.concat([X_pos, df_train_augmented])
-#     y_train = pd.concat([y_pos, label])
-
-
-#     return X_train, y_train
+#     return X_train, X_test, y_train, y_test
 
 
 def tokenize(X_train, X_test):
@@ -336,7 +294,9 @@ def tokenize(X_train, X_test):
     test_sequences = tokenizer.texts_to_sequences(X_test['text'])
     test_data = pad_sequences(test_sequences, maxlen=150)
 
+
     return train_data, test_data
+
 
 def get_num_words():
     global NUM_WORDS
