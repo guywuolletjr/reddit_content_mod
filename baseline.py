@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_recall_fscore_support, classification_report, accuracy_score
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.neural_network import MLPClassifier
 
 @click.command()
 @click.option('--cs', default=10,  help="How many Cs values are chosen in a grid for regularization")
@@ -17,6 +18,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 @click.option('--ngrams', default=1,  help="Larges ngram value to consider in tf-idf vectorization")
 @click.option('--count', is_flag=True, default=False,  help="uses a plain count vectorizer instead of a tf-idf vectorizer")
 @click.option('--reddit', is_flag=True, default=False,  help="train and test on the reddit data")
+@click.option('--nn', is_flag=True, default=False,  help="train with a neural network instead of a logistic regression")
 def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
     """
     This function runs a TF-IDF baseline with linear regression.
@@ -58,7 +60,6 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
         labels = ['toxic' , 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
         text_col = 'comment_text'
 
-
     np.random.seed(42) #so that our results are the same each time we run
 
     if(ngrams > 3):
@@ -82,17 +83,24 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
         y_train_label = y_train[label].values.tolist()
         y_test_label = y_test[label].values.tolist()
 
-        lr = LogisticRegressionCV(   class_weight="balanced",
-                                     Cs = cs,
-                                     cv = cv,
-                                     penalty = penalty,
-                                     scoring = scoring,
-                                     max_iter = max_iter)
+        if(reddit):
+            model = MLPClassifier(  hidden_layer_sizes=(128,128,128),
+                                    activation='tanh',
+                                    verbose=1
+                                    )
+        else:
+            model = LogisticRegressionCV(   class_weight="balanced",
+                                            Cs = cs,
+                                            cv = cv,
+                                            penalty = penalty,
+                                            scoring = scoring,
+                                            max_iter = max_iter,
+                                            verbose=1)
 
-        lr.fit(X_train_tfidf, y_train_label)
+        model.fit(X_train_tfidf, y_train_label)
 
         print("Train Results\n")
-        print_results(lr, X_train_tfidf, y_train_label)
+        print_results(model, X_train_tfidf, y_train_label)
 
         print("Test Results\n")
         precision, recall, fbeta_score, support, accuracy = print_results(lr, X_test_tfidf, y_test_label)
