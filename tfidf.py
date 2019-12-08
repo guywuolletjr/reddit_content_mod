@@ -94,7 +94,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=1/0000))
+        model.add(Dense(128, activation = 'tanh', input_dim=10000))
         model.add(Dense(64, activation = 'tanh'))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
@@ -110,8 +110,15 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
 
         model_output = model.fit(X_train_tfidf, y_train, epochs=100, batch_size = 10, validation_split=.3, verbose=1)
 
-        model.save_weights('models/tfidf_nn_weights.h5')
-        with open('models/tfidf_nn_architecture.json', 'w') as f:
+        if(reddit):
+            weights_name = 'models/tfidf_nn_reddit_weights.h5'
+            architecture_name = 'models/tfidf_nn_reddit_architecture.json'
+        else:
+            weights_name = 'models/tfidf_nn_weights.h5'
+            architecture_name = 'models/tfidf_nn_architecture.json'
+
+        model.save_weights(weights_name)
+        with open(architecture_name, 'w') as f:
             f.write(model.to_json())
 
     else:
