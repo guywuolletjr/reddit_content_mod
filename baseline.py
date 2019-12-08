@@ -51,7 +51,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
 
     if(reddit):
         X_train, y_train, X_test, y_test = utils.load_reddit_data()
-        labels = ['moderation']
+        labels = ['moderated']
         text_col = 'body'
     else:
         X_train, y_train, X_test, y_test = utils.load_data()

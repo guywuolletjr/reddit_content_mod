@@ -35,6 +35,7 @@ def load_reddit_data(split=.9):
 
     df = pd.concat([mod_df, unmod_df])
     df = df.reset_index(drop=True)
+    df = df.fillna("")
 
     X = df[['body', 'subreddit']]
     y = df[['moderated']]
