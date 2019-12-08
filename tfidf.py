@@ -9,6 +9,8 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neural_network import MLPClassifier
 
+from preprocc import preprocess
+
 @click.command()
 @click.option('--cs', default=10,  help="How many Cs values are chosen in a grid for regularization")
 @click.option('--cv', default=5,  help="Specifies K for stratified k fold cross validation")
@@ -54,11 +56,13 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(reddit):
         X_train, y_train, X_test, y_test = utils.load_reddit_data()
         labels = ['moderated']
-        text_col = 'body'
+        text_col = 'text'
     else:
         X_train, y_train, X_test, y_test = utils.load_data()
         labels = ['toxic' , 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
-        text_col = 'comment_text'
+        text_col = 'text'
+
+    X_train, X_test = preprocess(X_train, X_test, False)
 
     np.random.seed(42) #so that our results are the same each time we run
 
