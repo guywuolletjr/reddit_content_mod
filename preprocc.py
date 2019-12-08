@@ -24,7 +24,7 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 #keras
 from keras import Sequential
 import keras
-from keras.layers import Embedding, LSTM, Dense, Dropout
+from keras.layers import Embedding, LSTM, Dense, Dropout, GRU
 import tensorflow as tf
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences #padding
@@ -246,7 +246,7 @@ def preprocess(X_train, X_test, augment=False):
     print("stopwords")
     X_train['no_stop'] = X_train['expanded'].apply(lambda x: ' '.join([word for word in x.split() if word not in (ENGLISH_STOPWORDS)]))
     X_test['no_stop'] = X_test['expanded'].apply(lambda x: ' '.join([word for word in x.split() if word not in (ENGLISH_STOPWORDS)]))
-    
+
     #BEFORE THE LEMMATIZATION WE HAVE TO DO THE AUGMENTATION
     if(augment):
         X_train = augment(X_train, y_train)
@@ -260,15 +260,15 @@ def preprocess(X_train, X_test, augment=False):
 
     return X_train, X_test
 
- 
+
 def augment(X_train, y_train):
     labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
-    X_train['none'] = 1-y_train[labels].max(axis=1) #make an indicator for when there is no 
+    X_train['none'] = 1-y_train[labels].max(axis=1) #make an indicator for when there is no
     X_train['label'] = y_train.values.tolist()
-    
-    #augment the y 
+
+    #augment the y
     y_train['none'] = 1-y_train[labels].max(axis=1)
-    
+
     #negatives y_trains
     y_neg = y_train[y_train['none'] == 0]
 
@@ -280,9 +280,9 @@ def augment(X_train, y_train):
 
     #positive x_trains
     X_pos = X_train[X_train['none'] == 1]
-    
-    
-    print("entered augmentation") 
+
+
+    print("entered augmentation")
     #no_stop
     tfs = [
         change_person,
@@ -291,7 +291,7 @@ def augment(X_train, y_train):
         replace_noun_with_synonym,
         #replace_adjective_with_synonym,
     ]
-    
+
     mean_field_policy = MeanFieldPolicy(
         len(tfs),
         sequence_length=2,
@@ -301,11 +301,11 @@ def augment(X_train, y_train):
     )
 
     tf_applier = PandasTFApplier(tfs, mean_field_policy)
-    
-    #negative augmentations 
+
+    #negative augmentations
     df_train_augmented = tf_applier.apply(X_neg)
     Y_train_augmented = df_train_augmented["label"].values
-    
+
     #this is how you split out
     label = pd.DataFrame(columns=labels)
     label['toxic'] = X_train['label'].apply(lambda x: x[0])
@@ -314,11 +314,11 @@ def augment(X_train, y_train):
     label['threat'] = X_train['label'].apply(lambda x: x[3])
     label['insult'] = X_train['label'].apply(lambda x: x[4])
     label['identity_hate'] = X_train['label'].apply(lambda x: x[5])
-    
+
     X_train = pd.concat([X_pos, df_train_augmented])
-    y_train = pd.concat([y_pos, label]) 
-    
-    
+    y_train = pd.concat([y_pos, label])
+
+
     return X_train, y_train
 
 
@@ -348,7 +348,7 @@ def eight_way(train_data, test_data, y_train, y_test, batch_size):
     #first layer is embedding, takes in size of vocab, 100 dim embedding, and 150 which is length of the comment
     model.add(Embedding(NUM_WORDS, 100, input_length=150))
     model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
-    model.add(Dense(6, activation='sigmoid'))#change to 6 
+    model.add(Dense(6, activation='sigmoid'))#change to 6
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 

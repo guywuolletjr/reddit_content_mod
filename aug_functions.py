@@ -10,13 +10,13 @@ import nltk
 import ssl
 from nltk.corpus import wordnet as wn
 
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
-    
+# try:
+#     _create_unverified_https_context = ssl._create_unverified_context
+# except AttributeError:
+#     pass
+# else:
+#     ssl._create_default_https_context = _create_unverified_https_context
+
 nltk.download("wordnet")
 
 from utils import preview_tfs
@@ -51,7 +51,7 @@ def swap_adjectives(x):
         )
         return x
 
-    
+
 def get_synonym(word, pos=None):
     """Get synonym for word given its part-of-speech (pos)."""
     synsets = wn.synsets(word, pos=pos)
