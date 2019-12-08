@@ -93,7 +93,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
             output_size = 6
 
         model = Sequential()
-        model.add(Dense(128, activation = 'tanh', input_dim=50000))
+        model.add(Dense(128, activation = 'tanh', input_dim=10000))
         model.add(Dense(64, activation = 'tanh'))
         model.add(Dense(32, activation = 'tanh'))
         model.add(Dense(output_size, activation = 'sigmoid')) # we have six labels
