@@ -9,7 +9,7 @@ def lstm_double(train_data, test_data, y_train, y_test, NUM_WORDS, batch_size=20
     model.add(Dense(6, activation='sigmoid'))#change to 6 
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+    plot_model(model, to_file='double_lstm_model_plot.png', show_shapes=True, show_layer_names=True)
 
     #first run through didn't specify a batch size, probably do that
     #on the next try.
