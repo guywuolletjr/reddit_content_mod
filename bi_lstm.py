@@ -1,6 +1,8 @@
 from preprocc import *
 
-def bi_lstm(train_data, test_data, y_train, y_test, batch_size, NUM_WORDS):
+def bi_lstm(train_data, test_data, y_train, y_test, batch_size):
+    NUM_WORDS = get_num_words()
+    print(NUM_WORDS)
     model = Sequential()
 
     #first layer is embedding, takes in size of vocab, 100 dim embedding, and 150 which is length of the comment
@@ -33,7 +35,7 @@ print("tokenization...")
 train_data, test_data = tokenize(X_train, X_test)
 num_words = get_num_words()
 print("model!!!")
-model = bi_lstm(train_data, test_data, y_train, y_test, batch_size=20, num_words)
+model = bi_lstm(train_data, test_data, y_train, y_test, batch_size=20)
 print("evaluate!!")
 score = eight_way_eval(model, test_data, y_test)
 print(score)

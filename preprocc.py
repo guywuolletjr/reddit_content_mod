@@ -24,7 +24,7 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 #keras
 from keras import Sequential
 import keras
-from keras.layers import Embedding, LSTM, Dense, Dropout, GRU
+from keras.layers import Embedding, LSTM, Dense, Dropout, GRU, Bidirectional
 import tensorflow as tf
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences #padding
