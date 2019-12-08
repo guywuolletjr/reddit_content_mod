@@ -69,7 +69,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     if(ngrams > 3):
         ngrams = 3 # this makes training not take forever
 
-    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=50000)
+    vectorizer = TfidfVectorizer(ngram_range=(1, ngrams), max_features=10000)
     if(count):
         vectorizer = CountVectorizer()
 
