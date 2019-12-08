@@ -1,19 +1,9 @@
 import sys, os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt 
 import string
-import datetime
 import re
 
-
-#modeling imports
-from dateutil.relativedelta import relativedelta
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-
-
-import re
 from nltk.corpus import movie_reviews, stopwords
 from nltk.util import ngrams
 from nltk.tokenize import word_tokenize
@@ -30,9 +20,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_recall_fscore_support, classification_report, accuracy_score
 
-#multinomial nb
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
-from scipy.sparse.linalg import svds
+#keras
+from keras import Sequential
+import keras
+from keras.layers import Embedding, LSTM, Dense, Dropout
+import tensorflow as tf
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences #padding
 
 import re
 import nltk
@@ -46,6 +40,7 @@ from nltk.stem import WordNetLemmatizer
 
 BLACKLIST_STOPWORDS = ['over','only','very','not','no']
 ENGLISH_STOPWORDS = set(stopwords.words('english')) - set(BLACKLIST_STOPWORDS)
+NUM_WORDS = 0
 
 CLIST = {
   "ain't": "am not",
@@ -245,5 +240,77 @@ def preprocess(X_train, X_test):
 
     
     return X_train, X_test
+
+
+def tokenize(X_train, X_test):
+    #train tokenizer, then encode documents (comment_text)
+    tokenizer = Tokenizer(oov_token=True)
+    tokenizer.fit_on_texts(X_train['text']) #fit the tokenizer to training set, make the test unknown words be an UNK value.
+    global NUM_WORDS
+    NUM_WORDS = len(tokenizer.word_index) + 1
+    print(NUM_WORDS, "first!!!")
+
+    train_sequences = tokenizer.texts_to_sequences(X_train['text'])
+    train_data = pad_sequences(train_sequences, maxlen=150)
+    test_sequences = tokenizer.texts_to_sequences(X_test['text'])
+    test_data = pad_sequences(test_sequences, maxlen=150)
+    
+    return train_data, test_data
+
+
+def eight_way(train_data, test_data, y_train, y_test, batch_size):
+    global NUM_WORDS
+    print(NUM_WORDS)
+    ## Network architecture
+    # inspired at https://towardsdatascience.com/a-beginners-guide-on-sentiment-analysis-with-rnn-9e100627c02e and https://medium.com/@sabber/classifying-yelp-review-comments-using-lstm-and-word-embeddings-part-1-eb2275e4066b
+    model = Sequential()
+    
+    #first layer is embedding, takes in size of vocab, 100 dim embedding, and 150 which is length of the comment 
+    model.add(Embedding(NUM_WORDS, 100, input_length=150)) 
+    model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
+    model.add(Dense(6, activation='sigmoid'))#change to 8 
+    model.summary() #Print model Summary
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    
+    
+    
+    #first run through didn't specify a batch size, probably do that
+    #on the next try. 
+    model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
+    
+    #save json model
+    eight_way_json = model.to_json()
+    with open("eight_way.json", "w") as json_file:
+        json_file.write(eight_way_json)
+    
+    # serialize weights to HDF5
+    model.save_weights("eight_way.h5")
+    print("Saved eight_way to disk")
+    
+    return model 
+
+def print_results(model, X, y):
+    """Print out evaluate a model, returns the metrics as tuple
+    """
+    prediction = model.predict(X)
+    precision, recall, fbeta_score, support = \
+        precision_recall_fscore_support(y, prediction)
+    accuracy = accuracy_score(y, prediction)
+
+    print ("Precision: {}\nRecall: {}\nF-Score: {}\nSupport: {}\nAccuracy".format(
+            precision, recall, fbeta_score, support))
+
+    print (classification_report(y, prediction))
+
+    print("Example predictions: ")
+    print(prediction)
+
+    return (precision, recall, fbeta_score, support, accuracy)
+
+
+def eight_way_eval(model, test_data, y_test):
+    score = model.evaluate(test_data, y_test)
+    print_results(model, test_data, y_test)
+    return score
 
 
