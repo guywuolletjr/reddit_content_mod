@@ -39,6 +39,7 @@ def load_reddit_data(split=.9):
     df = df.fillna("")
 
     X = df[['body', 'subreddit']]
+    X = X.rename(columns = {'body':'comment_text'})
     y = df[['moderated']]
 
     # from https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
