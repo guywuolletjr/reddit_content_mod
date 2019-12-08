@@ -15,20 +15,18 @@ def two_layer_gru(train_data, test_data, y_train, y_test, batch_size):
     model.summary() #Print model Summary
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-
-
     #first run through didn't specify a batch size, probably do that
     #on the next try.
     model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
 
     #save json model
-    eight_way_json = model.to_json()
+    two_layer_gru_model = model.to_json()
     with open("models/two_layer_gru.json", "w") as json_file:
-        json_file.write(eight_way_json)
+        json_file.write(two_layer_gru_model)
 
     # serialize weights to HDF5
     model.save_weights("models/two_layer_gru.h5")
-    print("Saved eight_way to disk")
+    print("Saved two layer gru to disk")
 
     return model
 
