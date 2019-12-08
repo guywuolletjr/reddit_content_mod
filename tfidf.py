@@ -19,7 +19,7 @@ from sklearn.neural_network import MLPClassifier
 @click.option('--count', is_flag=True, default=False,  help="uses a plain count vectorizer instead of a tf-idf vectorizer")
 @click.option('--reddit', is_flag=True, default=False,  help="train and test on the reddit data")
 @click.option('--nn', is_flag=True, default=False,  help="train with a neural network instead of a logistic regression")
-def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
+def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit, nn):
     """
     This function runs a TF-IDF baseline with linear regression.
 
@@ -83,7 +83,7 @@ def tfidf(cs, cv, penalty, scoring, max_iter, ngrams, count, reddit):
         y_train_label = y_train[label].values.tolist()
         y_test_label = y_test[label].values.tolist()
 
-        if(reddit):
+        if(nn):
             print("Neural Network")
             model = MLPClassifier(  hidden_layer_sizes=(128,128,128),
                                     activation='tanh',
