@@ -1,9 +1,10 @@
 from preprocc import *
 
-def lstm_double(train_data, test_data, y_train, y_test, NUM_WORDS, batch_size=20):
+def lstm_triple(train_data, test_data, y_train, y_test, NUM_WORDS, batch_size=20):
     model = Sequential()
 
     model.add(Embedding(NUM_WORDS, 100, input_length=150))
+    model.add(LSTM(100, return_sequences=True))
     model.add(LSTM(100, return_sequences=True))
     model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
     model.add(Dense(6, activation='sigmoid'))#change to 6 
@@ -17,12 +18,12 @@ def lstm_double(train_data, test_data, y_train, y_test, NUM_WORDS, batch_size=20
 
     #save json model
     eight_way_json = model.to_json()
-    with open("double_lstm.json", "w") as json_file:
+    with open("triple_lstm.json", "w") as json_file:
         json_file.write(eight_way_json)
 
     # serialize weights to HDF5
-    model.save_weights("double_lstm.h5")
-    print("Saved double_lstm to disk")
+    model.save_weights("triple_lstm.h5")
+    print("Saved triple_lstm to disk")
 
     return model
 
@@ -44,7 +45,7 @@ def print_results(model, X, y):
 
     return (precision, recall, fbeta_score, support, accuracy)
 
-def double_lstm_eval(model, test_data, y_test):
+def triple_lstm_eval(model, test_data, y_test):
     score = model.evaluate(test_data, y_test)
     print_results(model, test_data, y_test)
     return score
@@ -60,9 +61,9 @@ print("tokenization...")
 train_data, test_data = tokenize(X_train, X_test)
 num_words = get_num_words()
 print("model!!!")
-model = lstm_double(train_data, test_data, y_train, y_test, num_words, batch_size=20)
+model = lstm_triple(train_data, test_data, y_train, y_test, num_words, batch_size=20)
 print("evaluate!!")
-score = double_lstm_eval(model, test_data, y_test)
+score = triple_lstm_eval(model, test_data, y_test)
 print(score)
 print("DONE!")
 
