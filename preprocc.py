@@ -10,7 +10,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
 from nltk.probability import FreqDist
 from nltk.stem import WordNetLemmatizer 
-
+import nltk 
+nltk.download('stopwords')
 
 #tf imports
 from sklearn.feature_extraction.text import TfidfVectorizer
