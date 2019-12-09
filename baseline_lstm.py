@@ -32,15 +32,11 @@ def baseline_lstm(train_data, test_data, y_train, y_test, batch_size):
 
     return model, score 
 
-
 print("loading data...")
 X_train, y_train, X_test, y_test = load_data()
 print("tokenization...")
 train_data, test_data = tokenize_baseline(X_train, X_test)
-print(type(train_data))
 print("model!!!")
 model, score = baseline_lstm(train_data, test_data, y_train, y_test, batch_size=20)
 print(score)
-
-
 print("DONE!")
