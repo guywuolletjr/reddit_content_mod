@@ -1,0 +1,9 @@
+Using TensorFlow backend.
+[nltk_data] Downloading package stopwords to /home/ubuntu/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+loading data...
+tokenization...
+Traceback (most recent call last):
+  File "baseline_lstm.py", line 38, in <module>
+    train_data, test_data = tokenize_baseline(X_train, X_test)
+NameError: name 'tokenize_baseline' is not defined
