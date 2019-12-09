@@ -1,4 +1,6 @@
 from preprocc import *
+import nltk
+nltk.download('stopwords')
 
 def baseline_lstm(train_data, test_data, y_train, y_test, batch_size):
     global NUM_WORDS
@@ -26,7 +28,7 @@ def baseline_lstm(train_data, test_data, y_train, y_test, batch_size):
     model.save_weights("models/baseline_lstm.h5")
     print("Saved baseline_lstm to disk")
 
-    score = model.evaluate(test_data, y_test, verbose=1)
+    score = model.evaluate(test_data, np.array(y_test), verbose=1)
     for i in range(len(model.metrics_names)):
         print("%s: %.2f%%" % (model.metrics_names[i], score[i]*100))
 

@@ -1,9 +1,61 @@
 Using TensorFlow backend.
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:74: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:517: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:4138: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:133: The name tf.placeholder_with_default is deprecated. Please use tf.compat.v1.placeholder_with_default instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/optimizers.py:790: The name tf.train.Optimizer is deprecated. Please use tf.compat.v1.train.Optimizer instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:3376: The name tf.log is deprecated. Please use tf.math.log instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/tensorflow_core/python/ops/nn_impl.py:183: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.where in 2.0, which has the same broadcast rule as np.where
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:986: The name tf.assign_add is deprecated. Please use tf.compat.v1.assign_add instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:973: The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
+
 [nltk_data] Downloading package stopwords to /home/ubuntu/nltk_data...
 [nltk_data]   Package stopwords is already up-to-date!
 loading data...
 tokenization...
+210339 first!!!
+model!!!
+0
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding_1 (Embedding)      (None, 150, 100)          0         
+_________________________________________________________________
+lstm_1 (LSTM)                (None, 100)               80400     
+_________________________________________________________________
+dense_1 (Dense)              (None, 6)                 606       
+=================================================================
+Total params: 81,006
+Trainable params: 81,006
+Non-trainable params: 0
+_________________________________________________________________
 Traceback (most recent call last):
-  File "baseline_lstm.py", line 38, in <module>
-    train_data, test_data = tokenize_baseline(X_train, X_test)
-NameError: name 'tokenize_baseline' is not defined
+  File "baseline_lstm.py", line 40, in <module>
+    model, score = baseline_lstm(train_data, test_data, y_train, y_test, batch_size=20)
+  File "baseline_lstm.py", line 18, in baseline_lstm
+    model.fit(train_data, np.array(y_train), validation_split=.2, epochs=3, batch_size=batch_size)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/engine/training.py", line 1010, in fit
+    self._make_train_function()
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/engine/training.py", line 509, in _make_train_function
+    loss=self.total_loss)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/legacy/interfaces.py", line 91, in wrapper
+    return func(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/optimizers.py", line 505, in get_updates
+    self.updates.append(K.update(m, m_t))
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py", line 973, in update
+    return tf.assign(x, new_x)
+  File "/home/ubuntu/anaconda3/envs/aws_neuron_tensorflow_p36/lib/python3.6/site-packages/tensorflow_core/python/ops/state_ops.py", line 228, in assign
+    return ref.assign(value, name=name)
+AttributeError: 'Tensor' object has no attribute 'assign'
