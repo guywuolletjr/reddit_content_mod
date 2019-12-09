@@ -280,6 +280,22 @@ def preprocess(X_train, X_test, augment=False):
 
 #     return X_train, X_test, y_train, y_test
 
+def tokenize_baseline(X_train, X_test):
+    #train tokenizer, then encode documents (comment_text)
+    tokenizer = Tokenizer(oov_token=True)
+    tokenizer.fit_on_texts(X_train['comment_text']) #fit the tokenizer to training set, make the test unknown words be an UNK value.
+    global NUM_WORDS
+    NUM_WORDS = len(tokenizer.word_index) + 1
+    print(NUM_WORDS, "first!!!")
+
+    train_sequences = tokenizer.texts_to_sequences(X_train['comment_text'])
+    train_data = pad_sequences(train_sequences, maxlen=150)
+    test_sequences = tokenizer.texts_to_sequences(X_test['comment_text'])
+    test_data = pad_sequences(test_sequences, maxlen=150)
+
+
+    return train_data, test_data
+
 
 def tokenize(X_train, X_test):
     #train tokenizer, then encode documents (comment_text)
@@ -289,9 +305,9 @@ def tokenize(X_train, X_test):
     NUM_WORDS = len(tokenizer.word_index) + 1
     print(NUM_WORDS, "first!!!")
 
-    train_sequences = tokenizer.texts_to_sequences(X_train['text'])
+    train_sequences = tokenizer.texts_to_sequences(X_train['comment_text'])
     train_data = pad_sequences(train_sequences, maxlen=150)
-    test_sequences = tokenizer.texts_to_sequences(X_test['text'])
+    test_sequences = tokenizer.texts_to_sequences(X_test['comment_text'])
     test_data = pad_sequences(test_sequences, maxlen=150)
 
 

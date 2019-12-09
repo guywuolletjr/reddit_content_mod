@@ -62,10 +62,10 @@ print("tokenization...")
 train_data, test_data = tokenize(X_train, X_test)
 print(type(train_data))
 print("model!!!")
-model = gru(train_data, test_data, y_train, y_test, batch_size=20)
-print("evaluate!!")
-score, history = eight_way_eval(model, test_data, y_test)
-print(score)
+model, history = gru(train_data, test_data, y_train, y_test, batch_size=20)
+# print("evaluate!!")
+# score, history = eight_way_eval(model, test_data, y_test)
+# print(score)
 
 acc = history.history['acc']
 val_acc = history.history['val_acc']
